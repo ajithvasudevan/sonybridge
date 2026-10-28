@@ -26,7 +26,7 @@ android {
         buildConfigField "String", "FTP_USER",   "\"sony\""
         buildConfigField "String", "FTP_PASS",   "\"sony\""
         buildConfigField "String", "PASV_PORTS", "\"50000-50050\""
-        buildConfigField "String", "IMMICH_URL", "\"${sv('immich_url', 'http://172.20.1.127:2283')}\""
+        buildConfigField "String", "IMMICH_URL", "\"${sv('immich_url', '')}\""
         buildConfigField "String", "IMMICH_KEY", "\"${sv('immich_key', '')}\""
     }
 
