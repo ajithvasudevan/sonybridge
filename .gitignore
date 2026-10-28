@@ -1,0 +1,14 @@
+*.iml
+.gradle/
+/local.properties
+.idea/
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+# secrets (immich upload key) — never commit
+app/secrets.properties
+secrets.properties
+*.apk
+*.aab

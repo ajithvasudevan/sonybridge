@@ -1,0 +1,69 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// immich URL + upload-only key from a gitignored app/secrets.properties
+def secrets = new Properties()
+def secretsFile = rootProject.file("app/secrets.properties")
+if (secretsFile.exists()) { secretsFile.withInputStream { secrets.load(it) } }
+def sv = { String k, String d -> (secrets.getProperty(k) ?: d) }
+
+android {
+    namespace 'dev.ajithv.sonybridge'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "dev.ajithv.sonybridge"
+        minSdk 27
+        targetSdk 34
+        versionCode 1
+        versionName "r1"
+
+        ndk { abiFilters 'arm64-v8a' }
+
+        buildConfigField "int",    "FTP_PORT",   "2121"
+        buildConfigField "String", "FTP_USER",   "\"sony\""
+        buildConfigField "String", "FTP_PASS",   "\"sony\""
+        buildConfigField "String", "PASV_PORTS", "\"50000-50050\""
+        buildConfigField "String", "IMMICH_URL", "\"${sv('immich_url', 'http://172.20.1.127:2283')}\""
+        buildConfigField "String", "IMMICH_KEY", "\"${sv('immich_key', '')}\""
+    }
+
+    buildFeatures { buildConfig true }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+    lint { abortOnError false }
+    packaging {
+        resources.excludes += ['META-INF/*.kotlin_module', 'META-INF/DEPENDENCIES',
+                                'META-INF/LICENSE*', 'META-INF/NOTICE*', 'META-INF/INDEX.LIST']
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    implementation "androidx.core:core-ktx:1.13.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.google.code.gson:gson:2.10.1"
+
+    // embedded FTP server (same stack primitive ftpd uses on Android)
+    implementation "org.apache.ftpserver:ftpserver-core:1.2.0"
+    implementation "org.slf4j:slf4j-nop:1.7.36"
+
+    // encrypted storage for the immich key
+    implementation "androidx.security:security-crypto:1.0.0"
+}
