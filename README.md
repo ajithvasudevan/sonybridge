@@ -46,7 +46,8 @@ A7 IV  --native FTP auto-transfer (per shot)-->  [ PHONE ]
 ## Build
 
 - Toolchain: **AGP 8.5.2, Kotlin 1.9.24, compileSdk 34, minSdk 27, arm64**, JDK **17**.
-- Create a **gitignored** `app/secrets.properties`:
+- Create a **gitignored** `app/secrets.properties` (required — the build bakes no
+  default URL/key; both can also be set later in the app's Settings screen):
   ```
   immich_url=http://<immich-host>:2283
   immich_key=<immich API key>
